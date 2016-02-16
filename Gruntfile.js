@@ -47,6 +47,11 @@ module.exports = function(grunt) {
                     cwd: './app/styles'
                 }, {
                     expand: true,
+                    src: [ './controllers/CollectionCtrl.js' ],
+                    dest: './dist/scripts',
+                    cwd: './app/scripts'
+                }, {
+                    expand: true,
                     src: [ './**/*.js' ],
                     dest: './dist/scripts',
                     cwd: './app/scripts'
