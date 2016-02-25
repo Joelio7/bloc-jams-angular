@@ -1,4 +1,8 @@
-var albumPicasso = {
+(function() {
+     function Fixtures() {
+         var Fixtures = {};
+         
+      var albumPicasso = {
     name: 'The Colors',
     artist: 'Pablo Picasso',
     label: 'Cubism',
@@ -27,3 +31,14 @@ var albumMarconi = {
          { name: 'Wrong phone number', length: '2:15'}
      ]
  };
+         Fixtures.getAlbum = function() {
+         return albumPicasso;
+     };
+
+         return Fixtures;
+     }
+ 
+     angular
+         .module('blocJams')
+         .factory('Fixtures', Fixtures);
+ })();
