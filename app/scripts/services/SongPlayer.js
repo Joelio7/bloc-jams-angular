@@ -6,37 +6,65 @@
     * @params {object} song {array} SongPlayer
     */
     
-    function SongPlayer() {
+    function SongPlayer(Fixtures) {
         var SongPlayer = {};
-        var currentSong = null;
+        /**
+        @desc injecting the fixtures service into the SongPlayer service
+        */
+        var currentAlbum = Fixtures.getAlbum();
         
         /**
          * @desc Buzz object audio file
          * @type {Object}
          */
         var currentBuzzObject = null;
+        SongPlayer.currentSong = null;
         
          /**
          * @function setSong
          * @desc Stops currently playing song and loads new audio file as currentBuzzObject
          * @param {Object} song
          */
+        
         var setSong = function(song) {
             if (currentBuzzObject) {
                 currentBuzzObject.stop();
-                currentSong.playing = null;
+                SongPlayer.currentSong.playing = null;
             }
             
             currentBuzzObject = new buzz.sound(song.audioUrl, {
                 formats: ['mp3'],
                 preload: true
             });
-            
-         
-            
-            currentSong = song;
+            SongPlayer.currentSong = song;
         };
-       
+        
+        /**
+        * @desc Active song object from list of songs
+        * @type {Object}
+        */
+        var getSongIndex = function(song) {
+            return currentAlbum.songs.indexOf(song);
+        };
+        
+        /** 
+        * @desc function that decrements the current song object in the list of songs
+        * @type {Object}
+        */
+        SongPlayer.previous = function() {
+             var currentSongIndex = getSongIndex(SongPlayer.currentSong);
+             currentSongIndex--;
+            
+            if (currentSongIndex < 0) {
+                 currentBuzzObject.stop();
+                 SongPlayer.currentSong.playing = null;
+             } else {
+                 var song = currentAlbum.songs[currentSongIndex];
+                 setSong(song);
+                 playSong(song);
+             }
+        };
+        
        /**
        * @function playSong
        * @desc plays currently playing song and sets the playing property of song to true
@@ -53,15 +81,15 @@
         * @params {object} song
         */
         SongPlayer.play = function(song) {
-            if (currentSong !== song) {
+            song = song || SongPlayer.currentSong;
+            if (SongPlayer.currentSong !== song) {
                 setSong(song);
                 playSong(song);
                 
             
-         } else if (currentSong === song) {
+         } else if (SongPlayer.currentSong === song) {
              if (currentBuzzObject.isPaused()) {
-                 currentBuzzObject.play();
-                 
+                playSong(song); 
                  
              }
          }
@@ -72,7 +100,8 @@
         * @params {object} song
         */
         SongPlayer.pause = function(song) {
-           currentBuzzObject.pause();
+             song = song || SongPlayer.currentSong;
+            currentBuzzObject.pause();
            song.playing = false;
        };
         
