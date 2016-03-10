@@ -24,7 +24,7 @@
         * @type {Number}
         */
         SongPlayer.currentTime = null;
-
+        SongPlayer.volume = null;
          /**
          * @function setSong
          * @desc Stops currently playing song and loads new audio file as currentBuzzObject
@@ -46,6 +46,7 @@
                     SongPlayer.currentTime = currentBuzzObject.getTime();
          });
      });
+            
             SongPlayer.currentSong = song;
     };
         
@@ -103,8 +104,14 @@
                  currentBuzzObject.setTime(time);
              }
          };
-
         
+       SongPlayer.setVolume = function(volume) {
+           if (currentBuzzObject) {
+               currentBuzzObject.setVolume(volume);
+           }
+           
+       };
+           
         
        /**
        * @function playSong
@@ -134,7 +141,13 @@
                  
              }
          }
-     };
+             currentBuzzObject.bind('volumechange', function() {
+                $rootScope.$apply(function() {
+                    SongPlayer.volume = currentBuzzObject.getVolume();
+             });
+         });
+            
+      };
         /**
         * @function SongPlayer.pause
         * @desc sets logic to pause the song when user clicks the pause button
